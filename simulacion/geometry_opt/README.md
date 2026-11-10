@@ -4,7 +4,7 @@ Iterative dynamics → actuator selection → structural sizing loop, driven by 
 100M-step policies (0.218 m/s no-slip reference and 1.40 m/s mocap-speed reference).
 
 ```bash
-source ".venv/bin/activate"                      # from "Optimizacion Geometria/"
+source ../.venv/bin/activate                     # from Tesis-Senecabot/simulacion/
 python -m geometry_opt.run_pipeline              # both policies, PLA and PETG (~1.5 min with cached gaits)
 python -m geometry_opt.run_pipeline --models v140 --materials PLA
 python -m geometry_opt.run_pipeline --no-cache   # re-record the gaits (needs the GPU, ~1 min each)

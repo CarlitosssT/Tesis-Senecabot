@@ -1,5 +1,9 @@
 # Eris — Control y calibración de patas de robot cuadrúpedo
 
+> Este README es el original del módulo de servos. Desde la fusión en `Tesis-Senecabot`, los sketches están en
+> [`../firmware/`](../firmware/) y las dependencias en [`../requirements.txt`](../requirements.txt). La descripción
+> general de `hardware/` está en [`../README.md`](../README.md).
+
 Código de tesis para controlar, calibrar y analizar las patas de un robot cuadrúpedo (proyecto **Eris**) con un ESP32, servos PWM (PCA9685) y un sensor de corriente INA219. Incluye notebooks de Jupyter para mandar comandos por Serial, capturar corriente por servo, y analizar/animar trayectorias de ángulos articulares, más los sketches de Arduino/ESP32 que corren en la placa.
 
 ## Hardware
@@ -9,15 +13,15 @@ Código de tesis para controlar, calibrar y analizar las patas de un robot cuadr
 - **INA219** para medir corriente/voltaje/potencia por servo, en un bus I2C1 aparte (`Wire1`, SDA=32, SCL=33) para no interferir con el PCA9685.
 - 12 servos usados (hip/knee/ankle × 4 patas: FR, FL, RR, RL); ver mapeo de canales en `LEG_JOINT_CHANNELS` dentro de `eris_servo_control.ipynb`.
 
-## Estructura del repo
+## Estructura del módulo
 
 ### Firmware (Arduino/ESP32)
 
 | Sketch | Para qué |
 |---|---|
-| `eris_servo_ina/eris_servo_ina.ino` | Firmware principal: 16 servos vía PCA9685 + lectura de corriente INA219, protocolo de texto compatible con el flavor `ErisServoDriver`. Usado por `eris_servo_control.ipynb`. |
-| `esp32_servo_control/esp32_servo_control.ino` | Firmware simple de 3 servos (una sola pata, pines directos del ESP32), usado por `send_servo_command.ipynb` para pruebas puntuales. |
-| `test_ina219/test_ina219.ino` | Sketch mínimo para confirmar que el INA219 responde en el bus I2C (útil si aparece "INA not found"). |
+| `../firmware/eris_servo_ina/eris_servo_ina.ino` | Firmware principal: 16 servos vía PCA9685 + lectura de corriente INA219, protocolo de texto compatible con el flavor `ErisServoDriver`. Usado por `eris_servo_control.ipynb`. |
+| `../firmware/esp32_servo_control/esp32_servo_control.ino` | Firmware simple de 3 servos (una sola pata, pines directos del ESP32), usado por `send_servo_command.ipynb` para pruebas puntuales. |
+| `../firmware/test_ina219/test_ina219.ino` | Sketch mínimo para confirmar que el INA219 responde en el bus I2C (útil si aparece "INA not found"). |
 
 ### Notebooks (Python)
 
@@ -51,7 +55,7 @@ Internamente esto se convierte al ángulo crudo del servo con `JOINT_SIGN`, porq
 1. Python 3.10+ y las dependencias:
 
    ```bash
-   pip install -r requirements.txt
+   pip install -r ../requirements.txt     # desde hardware/servos/
    ```
 
 2. Arduino IDE con **ESP32 board support**, y las librerías: `Adafruit PWM Servo Driver Library`, `INA219` (Rob Tillaart) o `Adafruit INA219` según el sketch.
@@ -61,4 +65,4 @@ Internamente esto se convierte al ángulo crudo del servo con `JOINT_SIGN`, porq
 ## Notas
 
 - La captura de corriente depende de que el INA219 esté bien alimentado; caídas de tensión fuertes (sag) pueden resetear su calibración interna y dejar la corriente leída en 0 aunque el voltaje se siga midiendo bien — el firmware re-arma la calibración cada 2 s como salvaguarda.
-- La carpeta `tesis/` es un entorno virtual de Python local y no debería versionarse (ver `.gitignore`).
+- La carpeta `tesis/` es un entorno virtual de Python local y no debería versionarse (está en el `.gitignore` de la raíz).

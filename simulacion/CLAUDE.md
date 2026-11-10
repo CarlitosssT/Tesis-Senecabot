@@ -1,8 +1,12 @@
-# CLAUDE.md — Definicion-Senecabot (raíz del repositorio)
+# CLAUDE.md — `simulacion/` (antes repositorio Definicion-Senecabot)
 
-Contexto para Claude Code (y para personas) que trabajan en este repo. Resume el proyecto completo y el trabajo
-hecho desde sep. 2026. El detalle de cada cambio vive en los dos change logs que se citan abajo; este archivo es el
-mapa. Última actualización: 2026-11-09.
+Contexto para Claude Code (y para personas) que trabajan en la parte de simulación de `Tesis-Senecabot`. Resume el
+trabajo hecho desde sep. 2026. El detalle de cada cambio vive en los dos change logs que se citan abajo; este archivo
+es el mapa. Última actualización: 2026-11-10.
+
+> Desde el 2026-11-10 esta carpeta es `simulacion/` dentro del repo unificado `Tesis-Senecabot` (la otra mitad es
+> `../hardware/`). Todas las rutas de este archivo son relativas a `simulacion/`. Las rutas antiguas de los change
+> logs se traducen en `../docs/rutas_antiguas.md`; las convenciones comunes están en `../docs/convenciones.md`.
 
 ---
 
@@ -13,7 +17,7 @@ capturada con MOCAP (imitación estilo DeepMimic, PPO en JAX sobre LocoMuJoCo co
 
 - La base (`seneca_loco/` y el fork `loco-mujoco-seneca/`) es la tesis de pregrado de Nicolás Andrade Manrique
   (Uniandes, jun. 2026), terminada en junio. Su mejor agente: `seneca_loco/artifacts/trained_agents/curated/4_best_try/17-19-49`.
-- **Este repo es la continuación de Carlos** (usuario actual, `ca.tovar2@uniandes.edu.co`), desde 2026-09-26:
+- **Esta parte es la continuación de Carlos** (usuario actual, `ca.tovar2@uniandes.edu.co`), desde 2026-09-26:
   1. Corregir la referencia y la recompensa (microsaltos, velocidad imposible).
   2. Arreglar un bug de reinicio de MJWarp.
   3. Entrenar agentes de 100 M pasos sin microsaltos (0.218 m/s y 1.40 m/s).
@@ -34,24 +38,26 @@ El usuario escribe en español; los commits y la documentación del usuario est�
 | `seneca_loco/` | Proyecto SenecaBot: XML MuJoCo, pipeline MOCAP → referencia, entrenamiento (Hydra), evaluación, agentes (`artifacts/`). **Tiene su propio `CLAUDE.md` con arquitectura y Change Log: léelo antes de tocar entrenamiento.** |
 | `loco-mujoco-seneca/` | Fork de LocoMuJoCo con los entornos `SenecaBot` y `SenecaBotRR`. Todo cambio local va marcado `[SENECA LOCAL CHANGE]` en el código y registrado en `SENECA_LOCAL_CHANGES.md` (más nuevo arriba). Tiene su propio `CLAUDE.md` (genérico de LocoMuJoCo). |
 | `geometry_opt/` | Pipeline de motores + estructura + mecanismo RR (`linkage.py`) + generador del XML RR (`make_rr_xml.py`). Ver `geometry_opt/README.md`, `results_summary.md`. |
-| `analisis_rr/` | Análisis de los agentes RR: `patas_rr.ipynb` (gráficas, GIFs, figura de geometría 2D), rollouts `.npz`, copia del XML de la geometría anterior (`senecabot_loco_rr_10-10-34.xml`). |
-| `analisis_microsaltos/` | Diagnóstico antes/después de los microsaltos de los agentes RRR (alturas de patas, deslizamiento). |
-| `diagnostico_microsaltos/` | `hop_diagnosis.py`: microsaltos traseros de v140 (vienen de la referencia, ver §6). |
-| `pruebas_pendiente/` | Pruebas en pendientes (`slope_test.py`, `gait_by_slope.py`, `render_slopes.py`, `visualize_slopes.ipynb`, JSON de resultados, videos). |
-| `my actuator/` | Catálogo MyActuator series L/H/X (CSV + xlsx) para la selección de motores. |
+| `analisis/pata_rr/` | Análisis de los agentes RR: `patas_rr.ipynb` (gráficas, GIFs, figura de geometría 2D), rollouts `.npz`, copia del XML de la geometría anterior (`senecabot_loco_rr_10-10-34.xml`). |
+| `analisis/microsaltos/` | Diagnóstico antes/después de los microsaltos de los agentes RRR (alturas de patas, deslizamiento). |
+| `analisis/microsaltos_traseros/` | `hop_diagnosis.py`: microsaltos traseros de v140 (vienen de la referencia, ver §6). |
+| `analisis/pendientes/` | Pruebas en pendientes (`slope_test.py`, `gait_by_slope.py`, `render_slopes.py`, `visualize_slopes.ipynb`, JSON de resultados, videos). |
+| `catalogo_myactuator/` | Catálogo MyActuator series L/H/X (CSV + xlsx) para la selección de motores. |
 | `requirements.txt` | Versiones exactas del entorno (Python 3.12, CUDA 12, mujoco 3.8.0). |
 
 `seneca_loco/` y `loco-mujoco-seneca/` son carpetas normales (sin su historial git original). `seneca_loco/artifacts/`
-**sí está versionado** en este repo (agentes `.pkl`, figuras; ~300 MB). `/tesis nicolas.pdf` y `/reporte_latex/`
-están en `.gitignore`.
+**sí está versionado** (agentes `.pkl`, figuras; ~300 MB), pero no todos los agentes citados aquí: v0218, el de
+pendientes y el de la tesis nunca se subieron (ver `../docs/historia.md`). `tesis nicolas.pdf` y `reporte_latex/`
+están en el `.gitignore` de la raíz.
 
 ---
 
 ## 3. Entorno
 
-- WSL2 Ubuntu 24.04, GPU NVIDIA, **`.venv` en la raíz** (no conda). Paquetes editables: `pip install -e loco-mujoco-seneca -e seneca_loco`.
-- `export SENECA_HOME="$HOME/Definicion-Senecabot/seneca_loco"` y `export MUJOCO_GL=egl` (en `~/.bashrc`).
-- Los `hydra.run.dir` de los yaml apuntan a `${oc.env:SENECA_HOME,/home/andre/Definicion-Senecabot/seneca_loco}`.
+- WSL2 Ubuntu 24.04, GPU NVIDIA, **`.venv` en la raíz de `Tesis-Senecabot/`** (no conda); los comandos se corren desde `simulacion/`. Paquetes editables: `pip install -e loco-mujoco-seneca -e seneca_loco`.
+- `export SENECA_HOME="$HOME/Tesis-Senecabot/simulacion/seneca_loco"` y `export MUJOCO_GL=egl` (en `~/.bashrc`).
+- Los `hydra.run.dir` de los yaml apuntan a `${oc.env:SENECA_HOME,/home/andre/Tesis-Senecabot/simulacion/seneca_loco}` (los registros de agentes ya
+  entrenados conservan la ruta antigua `Definicion-Senecabot/`; es normal).
 - `seneca_loco/CLAUDE.md` todavía menciona el entorno de Nicolás (conda `workspace`, `/home/ndam/...`, RTX 5070):
   **eso está desactualizado**, aquí se usa el `.venv`.
 - Con poca VRAM: `experiment.num_envs=1024 experiment.env_params.nconmax=13000`. Sin wandb: `WANDB_MODE=disabled`.
@@ -59,7 +65,7 @@ están en `.gitignore`.
 
 ---
 
-## 4. Acoplamiento entre repos (crítico)
+## 4. Acoplamiento entre `seneca_loco` y el fork (crítico)
 
 Muchas funciones están repartidas entre `seneca_loco` y el fork: términos de `MimicReward` (`rootvel_*`, `contact_*`,
 `action_rate_w`, `action_jerk_w`, `qacc_w`, `joint_limit_w`, `contact_ref_frac` por pata), logging en vivo a wandb,
@@ -124,7 +130,7 @@ Rodilla y tobillo son pasivos, cerrados por igualdades `connect`. 8 actuadores (
 **Pipeline RR:**
 
 ```bash
-source .venv/bin/activate                                   # desde la raíz
+source ../.venv/bin/activate                                # desde simulacion/
 python -m geometry_opt.run_pipeline --linkage               # dimensiona el mecanismo (FR y BR; FL/BL espejo) + motores
 python -m geometry_opt.make_rr_xml [--policy v140] [--material PLA]   # genera senecabot_loco_rr.xml (¡no editar a mano!)
 cd seneca_loco
@@ -194,9 +200,9 @@ de contacto de 37 mm); el tronco va 3.5 cm bajo la referencia. Probado sin éxit
   de las barras; los torques usan la marcha RRR (`LINKAGE_XML = XML_PATH`). Ya existe un agente RR, así que se podría
   grabar su marcha y pasar `LINKAGE_XML` a `XML_RR_PATH`.
 - FL/BL se copian de FR/BR (espejo), no se dimensionan.
-- Todo el frente RR (código, referencias, agentes, `analisis_rr/`, grabaciones) está commiteado en `main` desde el
-  2026-11-09. El usuario commitea directamente en `main` e incluye agentes y grabaciones; haz commit/push solo si lo pide.
-- `__pycache__/` está versionado por accidente en algunas carpetas; no añadir más.
+- Todo el frente RR (código, referencias, agentes, `analisis/pata_rr/`, grabaciones) está commiteado. El usuario
+  commitea directamente en `main` e incluye agentes y grabaciones; haz commit/push solo si lo pide.
+- `__pycache__/` está en `.gitignore` (los que se habían versionado por error se quitaron el 2026-11-10).
 
 ---
 

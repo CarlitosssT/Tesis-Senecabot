@@ -1,4 +1,4 @@
-# Optimización de geometría — SenecaBot
+# Simulación — SenecaBot
 
 Continuación del proyecto **SenecaBot**, un robot cuadrúpedo bioinspirado en la cabra que aprende a caminar
 imitando la marcha de un ovino capturada con MOCAP (aprendizaje por imitación estilo DeepMimic con PPO sobre
@@ -19,32 +19,36 @@ Sobre el proyecto original este repositorio agrega:
 
 ## Estructura
 
+Esta carpeta es la parte de simulación del repo [`Tesis-Senecabot`](../README.md) (antes era el repositorio
+`Definicion-Senecabot`). La otra parte, el robot físico, está en [`../hardware/`](../hardware/).
+
 | Carpeta | Contenido |
 |---|---|
 | [`seneca_loco/`](seneca_loco/) | Proyecto SenecaBot: modelo MuJoCo, pipeline MOCAP → trayectoria, entrenamiento, evaluación, agentes entrenados (`artifacts/`). Basado en [Robiolab/seneca_loco](https://github.com/Robiolab/seneca_loco). |
-| [`loco-mujoco-seneca/`](loco-mujoco-seneca/) | Fork de LocoMuJoCo con el entorno `SenecaBot` y los cambios locales (`SENECA_LOCAL_CHANGES.md`). Basado en [andrademarique-cpu/loco-mujoco-seneca](https://github.com/andrademarique-cpu/loco-mujoco-seneca). |
-| [`geometry_opt/`](geometry_opt/) | Pipeline de optimización de geometría y selección de motores ([README](geometry_opt/README.md), [reporte](geometry_opt/results_summary.md), [notebook](geometry_opt/visualize_results.ipynb)). |
-| [`analisis_microsaltos/`](analisis_microsaltos/) | Scripts y figuras del diagnóstico de los microsaltos (antes/después). |
-| [`my actuator/`](<my actuator/>) | Catálogo de actuadores MyActuator (series L, H y X) usado para la selección de motores. |
+| [`loco-mujoco-seneca/`](loco-mujoco-seneca/) | Fork de LocoMuJoCo con los entornos `SenecaBot` y `SenecaBotRR` y los cambios locales (`SENECA_LOCAL_CHANGES.md`). Basado en [andrademarique-cpu/loco-mujoco-seneca](https://github.com/andrademarique-cpu/loco-mujoco-seneca). |
+| [`geometry_opt/`](geometry_opt/) | Pipeline de optimización de geometría y selección de motores, mecanismo de la pata RR y generador del modelo RR ([README](geometry_opt/README.md), [reporte](geometry_opt/results_summary.md), [notebook](geometry_opt/visualize_results.ipynb)). |
+| [`analisis/`](analisis/) | Estudios puntuales: microsaltos, pendientes, pata RR ([README](analisis/README.md)). |
+| [`catalogo_myactuator/`](catalogo_myactuator/) | Catálogo de actuadores MyActuator (series L, H y X) usado para la selección de motores. |
 | `requirements.txt` | Versiones exactas del entorno con el que se obtuvieron los resultados. |
 
 `seneca_loco/` y `loco-mujoco-seneca/` están incluidos como carpetas normales (sin su historial de git); el
 historial y los autores originales están en los repositorios enlazados arriba. Los cambios hechos sobre ellos
 están documentados en `seneca_loco/CLAUDE.md` (sección *Change Log*) y en
-`loco-mujoco-seneca/SENECA_LOCAL_CHANGES.md`.
+`loco-mujoco-seneca/SENECA_LOCAL_CHANGES.md`. El contexto completo del trabajo está en [`CLAUDE.md`](CLAUDE.md).
 
 ## Instalación
 
 Probado en Linux con Python 3.12 y GPU NVIDIA (JAX + CUDA 12).
 
 ```bash
-git clone <url-de-este-repositorio> "Optimizacion Geometria"
-cd "Optimizacion Geometria"
-python3.12 -m venv .venv
+git clone https://github.com/CarlitosssT/Tesis-Senecabot.git ~/Tesis-Senecabot
+cd ~/Tesis-Senecabot
+python3.12 -m venv .venv                    # el entorno vive en la raíz del repo
 source .venv/bin/activate
-pip install -r requirements.txt
-pip install -e loco-mujoco-seneca -e seneca_loco
-export SENECA_HOME="$PWD/seneca_loco"      # raíz de seneca_loco (Hydra guarda aquí los entrenamientos)
+pip install -r simulacion/requirements.txt
+pip install -e simulacion/loco-mujoco-seneca -e simulacion/seneca_loco
+export SENECA_HOME="$PWD/simulacion/seneca_loco"   # raíz de seneca_loco (Hydra guarda aquí los entrenamientos)
+cd simulacion                               # los comandos de abajo se corren desde aquí
 ```
 
 Si tienes ROS instalado, ejecuta `unset PYTHONPATH` después de activar el entorno para que sus paquetes no se
@@ -89,8 +93,8 @@ driver en Windows y ejecuta `wsl --shutdown` en PowerShell.
 
 ```bash
 gh auth login         # GitHub.com -> HTTPS -> Login with a web browser
-gh repo clone CarlitosssT/Definicion-Senecabot
-cd ~/Definicion-Senecabot
+gh repo clone CarlitosssT/Tesis-Senecabot
+cd ~/Tesis-Senecabot
 ```
 
 **4. Entorno Python** (igual que en Linux):
@@ -99,9 +103,9 @@ cd ~/Definicion-Senecabot
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt            # varios GB (paquetes CUDA), tarda unos minutos
-pip install -e loco-mujoco-seneca -e seneca_loco
-echo 'export SENECA_HOME="$HOME/Definicion-Senecabot/seneca_loco"' >> ~/.bashrc
+pip install -r simulacion/requirements.txt   # varios GB (paquetes CUDA), tarda unos minutos
+pip install -e simulacion/loco-mujoco-seneca -e simulacion/seneca_loco
+echo 'export SENECA_HOME="$HOME/Tesis-Senecabot/simulacion/seneca_loco"' >> ~/.bashrc
 echo 'export MUJOCO_GL=egl' >> ~/.bashrc   # render sin pantalla (videos de entrenamiento)
 source ~/.bashrc
 ```
@@ -109,7 +113,7 @@ source ~/.bashrc
 **5. Verificar:**
 
 ```bash
-cd ~/Definicion-Senecabot && source .venv/bin/activate
+cd ~/Tesis-Senecabot && source .venv/bin/activate
 python -c "import jax; print(jax.devices())"        # [CudaDevice(id=0)]
 python -c "import mujoco; print(mujoco.__version__)" # 3.8.0
 ```
@@ -121,7 +125,7 @@ Si JAX muestra `CpuDevice`, la GPU no está disponible dentro de WSL (revisa el 
 1. Instala VS Code **en Windows** y, dentro de él, la extensión **WSL** (`ms-vscode-remote.remote-wsl`).
 2. Desde Ubuntu:
    ```bash
-   cd ~/Definicion-Senecabot
+   cd ~/Tesis-Senecabot
    code .
    ```
 3. Abajo a la izquierda debe aparecer **`WSL: Ubuntu-24.04`**. Si en cambio aparece el aviso *"The host
@@ -134,7 +138,7 @@ Así la terminal integrada, los notebooks y el debugger usan Ubuntu y el `.venv`
 
 
 **GPU con poca VRAM (p. ej. 8 GB).** `conf.yaml` usa 2048 entornos en paralelo; si el entrenamiento falla con
-`RESOURCE_EXHAUSTED` / `out of memory`, reduce los entornos desde la línea de comandos (sin editar archivos):
+`RESOURCE_EXHAUSTED` / `out of memory`, reduce los entornos desde la línea de comandos (sin editar archivos), desde `simulacion/`:
 
 ```bash
 python seneca_loco/simulation/training/train.py experiment.num_envs=1024 experiment.env_params.nconmax=13000
@@ -154,9 +158,11 @@ una vez.
 
 ## Uso
 
+Desde `simulacion/`, con el `.venv` activado:
+
 ```bash
 # Menú del proyecto SenecaBot (generar referencia, entrenar, evaluar, ...)
-cd seneca_loco && python main.py
+(cd seneca_loco && python main.py)
 
 # Entrenar directamente (configuración en seneca_loco/simulation/training/conf.yaml)
 python seneca_loco/simulation/training/train.py experiment.total_timesteps=100e6
@@ -213,11 +219,11 @@ Este trabajo se construye sobre los siguientes proyectos, a cuyos autores corres
   [Hydra](https://github.com/facebookresearch/hydra), [Weights & Biases](https://wandb.ai),
   [Optuna](https://github.com/optuna/optuna) y [ezc3d](https://github.com/pyomeca/ezc3d).
 - **Datos técnicos**: catálogo de actuadores de [MyActuator](https://www.myactuator.com) (carpeta
-  `my actuator/`) y hojas técnicas de Prusament PLA y PETG de Prusa Polymers (propiedades de los materiales en
+  `catalogo_myactuator/`) y hojas técnicas de Prusament PLA y PETG de Prusa Polymers (propiedades de los materiales en
   `geometry_opt/config.py`).
 
 ## Licencia
 
 `seneca_loco/` y `loco-mujoco-seneca/` conservan sus licencias MIT originales (archivos `LICENSE` en cada
-carpeta). El código nuevo de este repositorio (`geometry_opt/`, `analisis_microsaltos/`) no tiene todavía una
+carpeta). El código nuevo de este repositorio (`geometry_opt/`, `analisis/`) no tiene todavía una
 licencia definida.
