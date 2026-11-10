@@ -1,0 +1,14 @@
+numpy
+scipy
+matplotlib
+sympy
+pandas
+jupyter
+ipywidgets
+panda3d
+panda3d-gltf
+mujoco
+mediapy
+pytest
+prettyplot
+pyserial
