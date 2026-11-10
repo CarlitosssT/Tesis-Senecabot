@@ -1,5 +1,5 @@
 """
-MyActuator catalog (folder `my actuator/`).
+MyActuator catalog (folder `catalogo_myactuator/`).
 
 The .xlsx and `motors_MyActuator_Series_L_H_X.csv` hold the same 30 motors (14 columns); the CSV is
 read (no openpyxl needed). Format: ';' separator, decimal comma, UTF-8 BOM, 'N/A' for missing.

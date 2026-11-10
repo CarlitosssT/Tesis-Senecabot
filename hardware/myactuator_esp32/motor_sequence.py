@@ -5,9 +5,9 @@ texto ("p <grados> <dps>", "e", "s") a tramas CAN. Este script solo habla por el
 puerto serie, no necesita un adaptador USB-CAN.
 
 Ejemplos:
-    python motor_sequence.py --port COM3 0 90 180:60 -45
-    python motor_sequence.py --port COM3 --file secuencia.csv
-    python motor_sequence.py --port COM3 --file secuencia.csv --repeat 3
+    python myactuator_esp32/motor_sequence.py --port COM3 0 90 180:60 -45
+    python myactuator_esp32/motor_sequence.py --port COM3 --file secuencia.csv
+    python myactuator_esp32/motor_sequence.py --port COM3 --file secuencia.csv --repeat 3
 
 Formato de un paso: angulo[:velocidad_dps[:pausa_s]]
 Formato del CSV (una linea por paso, # para comentarios): angulo,velocidad,pausa

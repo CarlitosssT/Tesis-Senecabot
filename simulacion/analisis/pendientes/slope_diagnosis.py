@@ -7,8 +7,8 @@ y para cada caso mide:
     si es alta, el limite es de torque (accion normalizada; ctrlrange = +-80 N.m cadera/rodilla, +-40 tobillo)
   * modo de caida: cabeceo (+ = nariz abajo) y alabeo del tronco respecto a la pendiente, altura del tronco.
 
-    python pruebas_pendiente/slope_diagnosis.py        (PYTHONPATH = raiz del repo y pruebas_pendiente/)
-Salida: pruebas_pendiente/slope_diagnosis.json
+    python analisis/pendientes/slope_diagnosis.py        (PYTHONPATH = simulacion/ y analisis/pendientes/)
+Salida: analisis/pendientes/slope_diagnosis.json
 """
 import json
 import os

@@ -14,8 +14,8 @@ Por pendiente guarda:
     respecto al suelo y respecto a la horizontal, altura del tronco, potencia mecanica, costo de transporte
     y velocidad de resbalamiento de cada pata apoyada.
 
-    python pruebas_pendiente/gait_by_slope.py [--agent v140] [--angles -20 -15 ... 20]
-Salida: pruebas_pendiente/gait_by_slope.npz (v140) o gait_by_slope_<etiqueta>.npz
+    python analisis/pendientes/gait_by_slope.py [--agent v140] [--angles -20 -15 ... 20]
+Salida: analisis/pendientes/gait_by_slope.npz (v140) o gait_by_slope_<etiqueta>.npz
 """
 import argparse
 import os

@@ -6,7 +6,7 @@ hydra:
   run:
     # Absolute via env var with a default -> no more cwd-dependent path doubling.
     # Override the repo root with $SENECA_HOME if the workspace moves.
-    dir: ${oc.env:SENECA_HOME,/home/andre/Definicion-Senecabot/seneca_loco}/artifacts/trained_agents_rr/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: ${oc.env:SENECA_HOME,/home/andre/Tesis-Senecabot/simulacion/seneca_loco}/artifacts/trained_agents_rr/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 # reference gait for the RR model (simulation/mocap/trajectory/trajectory_generation_rr.py), relative to seneca_loco/
 reference: data/processed_data/trajectory_adapted_rr.npz

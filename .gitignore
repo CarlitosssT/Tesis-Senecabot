@@ -1,0 +1,22 @@
+# ---------------------------------------------------------------
+# Entornos virtuales de Python
+# (simulación: .venv en la raíz; hardware: tesis/ o venv/ en Windows)
+.venv/
+venv/
+tesis/
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Arduino
+build/
+*.hex
+
+# Configuración local de Claude Code
+.claude/
+
+# Documentos que no se publican
+tesis nicolas.pdf
+reporte_latex/

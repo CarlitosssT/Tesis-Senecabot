@@ -17,7 +17,7 @@ de la orientacion de la referencia (paralelo a la pendiente); ajuste fino con re
 a mas de 50 grados de la vertical (gravedad) o raiz a menos de 0.15 m. Para comparar agentes entre si,
 usar el mismo en todos: --fall upright o --fall reference.
 
-    python pruebas_pendiente/slope_test.py [--agent v140|v0218|<ruta .pkl>] [--angles 0 5 10 15 20]
+    python analisis/pendientes/slope_test.py [--agent v140|v0218|<ruta .pkl>] [--angles 0 5 10 15 20]
 Salida: slope_results.json (v140) o slope_results_<etiqueta>.json
 """
 import argparse

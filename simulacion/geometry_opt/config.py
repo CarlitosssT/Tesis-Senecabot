@@ -10,14 +10,14 @@ from pathlib import Path
 # ------------------------------------------------------------------------------------------------
 # Paths
 # ------------------------------------------------------------------------------------------------
-ROOT = Path(__file__).resolve().parent                      # .../Optimizacion Geometria/geometry_opt
-WORKSPACE = ROOT.parent                                     # .../Optimizacion Geometria
+ROOT = Path(__file__).resolve().parent                      # .../Tesis-Senecabot/simulacion/geometry_opt
+WORKSPACE = ROOT.parent                                     # .../Tesis-Senecabot/simulacion
 SENECA = WORKSPACE / "seneca_loco"
 XML_PATH = SENECA / "simulation" / "assets" / "xml" / "senecabot_loco.xml"
 # RR variant of the model: thigh (first link) removed, tibia and metatarsus unchanged. The recorded gaits and the
 # trained policies are for XML_PATH (RRR); a gait recorded on the RR model needs a policy retrained on this XML.
 XML_RR_PATH = SENECA / "simulation" / "assets" / "xml" / "senecabot_loco_rr.xml"
-CATALOG_CSV = WORKSPACE / "my actuator" / "motors_MyActuator_Series_L_H_X.csv"
+CATALOG_CSV = WORKSPACE / "catalogo_myactuator" / "motors_MyActuator_Series_L_H_X.csv"
 RESULTS_DIR = ROOT / "results"                              # cached gaits (+ outputs of the default mode)
 SUMMARY_MD = ROOT / "results_summary.md"
 

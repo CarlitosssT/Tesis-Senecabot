@@ -2,7 +2,7 @@
 Diagnostico de microsaltos: compara las pisadas de un agente (por defecto v140, terreno plano) con las de su
 trayectoria de referencia, pata por pata.
 
-Contacto de una pata: misma definicion que pruebas_pendiente/gait_by_slope.py (centro de la esfera del pie a
+Contacto de una pata: misma definicion que analisis/pendientes/gait_by_slope.py (centro de la esfera del pie a
 <= 2.7 cm del suelo, y sigue en contacto hasta subir de 3.7 cm). Un "vuelo" es un tramo sin contacto entre
 dos apoyos; un microsalto es un vuelo corto (< --short s).
 
@@ -15,8 +15,8 @@ apoyo es la etiqueta relativa de MimicReward, porque sus pies delanteros no baja
     coincidencia del agente con la etiqueta de MimicReward (lo que premia contact_w_sum).
 Para el agente, ademas: rms de la velocidad vertical del tronco y % de pasos con cada accion en su limite.
 
-    python diagnostico_microsaltos/hop_diagnosis.py [--agent v140] [--n-envs 32] [--seconds 10]
-Salida: diagnostico_microsaltos/hop_diagnosis_<etiqueta>.json
+    python analisis/microsaltos_traseros/hop_diagnosis.py   (desde simulacion/) [--agent v140] [--n-envs 32] [--seconds 10]
+Salida: analisis/microsaltos_traseros/hop_diagnosis_<etiqueta>.json
 """
 import argparse
 import json
@@ -28,7 +28,8 @@ import mujoco
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent
-sys.path[:0] = [str(ROOT.parent), str(ROOT.parent / "pruebas_pendiente")]
+SIM = ROOT.parents[1]                                            # simulacion/ (contiene geometry_opt/)
+sys.path[:0] = [str(SIM), str(SIM / "analisis" / "pendientes")]
 os.environ.setdefault("XLA_PYTHON_CLIENT_PREALLOCATE", "false")
 from geometry_opt import config as C                              # noqa: E402
 from slope_test import load_agent, make_env                      # noqa: E402

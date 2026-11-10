@@ -1,5 +1,5 @@
 """Foot slip while in ground contact (world-frame horizontal foot speed during stance).
-usage (from seneca_loco/): python ../analisis_microsaltos/slip.py AGENT.pkl REF.npz TAG"""
+usage (from seneca_loco/): python ../analisis/microsaltos/slip.py AGENT.pkl REF.npz TAG"""
 import sys, numpy as np, mujoco
 from omegaconf import OmegaConf
 from loco_mujoco import TaskFactory

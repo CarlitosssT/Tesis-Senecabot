@@ -1,5 +1,5 @@
 """Micro-hop metrics for an agent, evaluated on a given reference trajectory.
-usage (from seneca_loco/): python ../analisis_microsaltos/hops_compare.py AGENT.pkl REF.npz TAG FIG.png"""
+usage (from seneca_loco/): python ../analisis/microsaltos/hops_compare.py AGENT.pkl REF.npz TAG FIG.png"""
 import sys
 import numpy as np, mujoco
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt

@@ -5,8 +5,8 @@ La simulacion corre en el marco de la pendiente (gravedad inclinada, ver slope_t
 video se gira todo el mundo (robot + suelo) alrededor del origen para que la gravedad quede vertical,
 asi el suelo se ve inclinado. El video se corta 0.5 s despues de la primera caida.
 
-    MUJOCO_GL=egl python pruebas_pendiente/render_slopes.py [--agent v140|<ruta .pkl>] [--cases up:5 ... down:20]
-Salida: pruebas_pendiente/videos/<up|down>_<grados>.mp4 (v140) o videos/<etiqueta>/<up|down>_<grados>.mp4
+    MUJOCO_GL=egl python analisis/pendientes/render_slopes.py [--agent v140|<ruta .pkl>] [--cases up:5 ... down:20]
+Salida: analisis/pendientes/videos/<up|down>_<grados>.mp4 (v140) o videos/<etiqueta>/<up|down>_<grados>.mp4
 """
 import argparse
 import os

@@ -14,7 +14,7 @@ defaults:
 
 hydra:
   run:
-    dir: ${oc.env:SENECA_HOME,/home/ndam/Desktop/workspace/seneca_loco}/artifacts/trained_agents/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: ${oc.env:SENECA_HOME,/home/andre/Tesis-Senecabot/simulacion/seneca_loco}/artifacts/trained_agents/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 wandb:
   project: "deepmimic_senecabot"
