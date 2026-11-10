@@ -74,3 +74,11 @@ design, the left legs of the model are identical to the right ones). Picture: `r
   gait poses of FR and BR set from the IK of `linkage.py`; 1000 steps with PD on the cranks stay stable.
 - The policies trained on the RRR model do not transfer: the gait has to be retrained on this XML (control = the 8 crank
   torques). `LINKAGE_XML` stays on the RRR model (the recorded gaits); `config.XML_RR_PATH` points to this file.
+
+## Actuator catalog (2026-11-10)
+
+`catalogo_myactuator/motors_MyActuator_Series_L_H_X.csv` now has 36 motors (added X4-10-L, X4-36-L, X6-50-L,
+X8-150, X10-200, X15-450; `X8-102` renamed to `X8-120`) plus diameter/length/radius columns and links to the
+characteristic curves (`catalogo_myactuator/README.md`). `catalog.load()` ignores the new columns. With the larger
+catalog the pipeline picks X6-50-L / X4-10-L for some joints (8.73 / 9.68 kg instead of 8.77 / 9.72 kg, PLA);
+`results_summary.md` has **not** been regenerated yet and still reflects the previous catalog.

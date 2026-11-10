@@ -1,9 +1,10 @@
 """
 MyActuator catalog (folder `catalogo_myactuator/`).
 
-The .xlsx and `motors_MyActuator_Series_L_H_X.csv` hold the same 30 motors (14 columns); the CSV is
-read (no openpyxl needed). Format: ';' separator, decimal comma, UTF-8 BOM, 'N/A' for missing.
-No file lists motor dimensions, so motors enter the dynamic model as point masses.
+The .xlsx and `motors_MyActuator_Series_L_H_X.csv` hold the same 36 motors; the CSV is read (no openpyxl
+needed). Format: ';' separator, decimal comma, UTF-8 BOM, 'N/A' for missing. Since 2026-11-10 the CSV also has
+diameter/length/radius columns and links to characteristic curves (see catalogo_myactuator/README.md); they are
+not used here yet, so motors still enter the dynamic model as point masses.
 Note: the column `rated_voltage_A` is the rated CURRENT; it is renamed.
 """
 import pandas as pd

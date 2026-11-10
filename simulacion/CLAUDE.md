@@ -42,7 +42,7 @@ El usuario escribe en español; los commits y la documentación del usuario est�
 | `analisis/microsaltos/` | Diagnóstico antes/después de los microsaltos de los agentes RRR (alturas de patas, deslizamiento). |
 | `analisis/microsaltos_traseros/` | `hop_diagnosis.py`: microsaltos traseros de v140 (vienen de la referencia, ver §6). |
 | `analisis/pendientes/` | Pruebas en pendientes (`slope_test.py`, `gait_by_slope.py`, `render_slopes.py`, `visualize_slopes.ipynb`, JSON de resultados, videos). |
-| `catalogo_myactuator/` | Catálogo MyActuator series L/H/X (CSV + xlsx) para la selección de motores. |
+| `catalogo_myactuator/` | Catálogo MyActuator series L/H/X (CSV + xlsx) para la selección de motores, con dimensiones (Ø, largo, radio + 5 mm), curvas características (`curvas/`) y fichas PDF originales (`fichas/`). Ver su `README.md`. |
 | `requirements.txt` | Versiones exactas del entorno (Python 3.12, CUDA 12, mujoco 3.8.0). |
 
 `seneca_loco/` y `loco-mujoco-seneca/` son carpetas normales (sin su historial git original). `seneca_loco/artifacts/`
@@ -200,6 +200,9 @@ de contacto de 37 mm); el tronco va 3.5 cm bajo la referencia. Probado sin éxit
   de las barras; los torques usan la marcha RRR (`LINKAGE_XML = XML_PATH`). Ya existe un agente RR, así que se podría
   grabar su marcha y pasar `LINKAGE_XML` a `XML_RR_PATH`.
 - FL/BL se copian de FR/BR (espejo), no se dimensionan.
+- **2026-11-10: el catálogo MyActuator ganó 6 motores (X4-10-L, X4-36-L, X6-50-L, X8-150, X10-200, X15-450) y
+  `X8-102` pasó a `X8-120`.** Con él, `run_pipeline` elige X6-50-L y X4-10-L en algunas articulaciones (8.73 / 9.68 kg
+  en vez de 8.77 / 9.72 kg, PLA). `geometry_opt/results_summary.md` sigue con el catálogo anterior hasta que se regenere.
 - Todo el frente RR (código, referencias, agentes, `analisis/pata_rr/`, grabaciones) está commiteado. El usuario
   commitea directamente en `main` e incluye agentes y grabaciones; haz commit/push solo si lo pide.
 - `__pycache__/` está en `.gitignore` (los que se habían versionado por error se quitaron el 2026-11-10).

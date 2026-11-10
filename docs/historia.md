@@ -38,6 +38,7 @@ El trabajo de Carlos Andrés Tovar avanzó en dos repositorios en paralelo, que 
 | 11-03 → 11-04 | simulación | **Rediseño de la pata a RR** (frente activo): sin muslo ni cadera; rodilla y tobillo movidos desde el torso por dos mecanismos de barras. Mecanismo dimensionado, modelo MuJoCo generado, entorno `SenecaBotRR` y agentes entrenados. Elegido: `trained_agents_rr/2026-11-04/17-37-28`. |
 | 11-06 | hardware | Seguimiento de trayectoria con el motor MyActuator (registro `track_fr_hip_motor_20261106_*`) y señales de identificación de sistema (`sysid/`) grabadas. |
 | 11-10 | — | Los dos repositorios se fusionan en este (`Tesis-Senecabot`), con su historial. |
+| 11-10 | simulación | Catálogo MyActuator ampliado desde la web del fabricante: dimensiones de 29 motores, curvas características de 19, 6 motores nuevos y fichas PDF (`simulacion/catalogo_myactuator/README.md`). Cambia la selección de `geometry_opt` (aún no regenerada). |
 
 ---
 
@@ -101,6 +102,8 @@ porque la elección afecta tanto al hardware como al modelo de simulación.
 - `geometry_opt` con el mecanismo no cierra el lazo dinámico: los motores no se mueven al torso ni se suma la masa
   de las barras, y los torques usan la marcha RRR. Se podría grabar la marcha del agente RR y usarla.
 - Las patas izquierdas (FL/BL) se copian en espejo de las derechas; no se dimensionan por separado.
+- Regenerar `geometry_opt/results_summary.md` con el catálogo MyActuator ampliado (cambia algunos motores) y,
+  si sirve, usar las dimensiones de los motores (radio con holgura) en el modelo en vez de masas puntuales.
 
 **Hardware**
 
