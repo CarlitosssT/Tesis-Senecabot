@@ -28,7 +28,7 @@ documentos) está ahora dentro de `simulacion/`. Además:
 | `motor_sequence.py` | `hardware/myactuator_esp32/motor_sequence.py` |
 | `servos/requirements.txt` | `hardware/requirements.txt` |
 | `servos/`, `leg_transmission/`, `myactuator_esp32/` | `hardware/` + el mismo nombre |
-| `README.md`, `CLAUDE.md` | `hardware/README.md`, `hardware/CLAUDE.md` |
+| `README.md`, `CLAUDE.md`, `AGENTS.md` | `hardware/README.md`, `hardware/CLAUDE.md`, `hardware/AGENTS.md` |
 | `Tesis/workspace/seneca_loco/...` (proyecto externo citado en las notas) | `simulacion/seneca_loco/...` (ahora en este repo) |
 
 En el commit inicial de `Senecabot_mini` los notebooks de servos estaban en la raíz; se movieron a `servos/` en el

@@ -16,6 +16,8 @@ build/
 
 # Configuración local de Claude Code
 .claude/
+.codex/
+.Codex/
 
 # Documentos que no se publican
 tesis nicolas.pdf

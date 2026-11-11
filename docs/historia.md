@@ -37,6 +37,7 @@ El trabajo de Carlos Andrés Tovar avanzó en dos repositorios en paralelo, que 
 | sin fecha | hardware | Notebooks `Mecanismo*.ipynb`: exploración de una pata con dos mecanismos de barras RR. `MecanismoV2.ipynb` se portó luego a `simulacion/geometry_opt/linkage.py`. |
 | 11-03 → 11-04 | simulación | **Rediseño de la pata a RR** (frente activo): sin muslo ni cadera; rodilla y tobillo movidos desde el torso por dos mecanismos de barras. Mecanismo dimensionado, modelo MuJoCo generado, entorno `SenecaBotRR` y agentes entrenados. Elegido: `trained_agents_rr/2026-11-04/17-37-28`. |
 | 11-06 | hardware | Seguimiento de trayectoria con el motor MyActuator (registro `track_fr_hip_motor_20261106_*`) y señales de identificación de sistema (`sysid/`) grabadas. |
+| 11-10 | hardware | **Identificación del MyActuator** (`hardware/myactuator_esp32/sysid/visualizar_sysid.ipynb`): se elige el modo 0x400 y el modelo de 1.er orden G(s) = 1.013 / (0.0146 s + 1) · e^(−0.005 s), ajuste 86–90 %. |
 | 11-10 | — | Los dos repositorios se fusionan en este (`Tesis-Senecabot`), con su historial. |
 | 11-10 | simulación | Catálogo MyActuator ampliado desde la web del fabricante: dimensiones de 29 motores, curvas características de 19, 6 motores nuevos y fichas PDF (`simulacion/catalogo_myactuator/README.md`). Cambia la selección de `geometry_opt` (aún no regenerada). |
 
@@ -110,7 +111,8 @@ porque la elección afecta tanto al hardware como al modelo de simulación.
 - Calibrar offsets y signos físicos de la transmisión por paralelogramos.
 - Corregir (o marcar como obsoletos) los cálculos de `plot_leg_actuator_angles.ipynb` y `phase_match_*.py` que
   usan la convención "90 = recto".
-- Identificar el modelo comando → posición del MyActuator con los datos de `myactuator_esp32/sysid/`.
+- MyActuator (modo 0x400): el modelo lineal ya está identificado; falta modelar la zona muerta/fricción (~0.3° de
+  error estático), validarlo con trayectorias reales (p. ej. `fr_hip_motor`) y diseñar el prefiltro/compensador.
 - Llevar a hardware real la estimación de fase con un IMU en el tobillo (hoy solo simulada; `firmware/test_bmi160`
   es el primer paso).
 - El firmware de la ESP32 para el MyActuator (`motor_control.ino`) no está en este repo; vive en el proyecto

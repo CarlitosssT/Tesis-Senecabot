@@ -146,13 +146,21 @@ que traduce comandos de texto a tramas CAN. No se necesita adaptador USB-CAN, so
 - **`sysid/`**: `make_sysid_signals.py` genera señales de 1000 puntos a 100 Hz que empiezan y terminan en 0°:
   `chirp` (0.2–15 Hz), `multisine` (24 senoidales, fases de Schroeder), `steps` (±1, 2, 3, 5°) y `ramp` (2 dps).
   Se cargan en `gui.py` con escala 1, ciclos 1, offset 0, 600 dps. `visualizar_sysid.ipynb` las compara con los
-  registros reales `ejecucion_*.csv`.
+  registros reales `ejecucion_*.csv` e **identifica el modelo comando → posición** (2026-11-10):
+  - Los `ejecucion_*_0x400.csv` son del modo `MODE_MOTION` (0x400); el resto, del modo posición 0xA4 (más lento).
+    `ejecucion_cihrp_0x400.csv` es el chirp (error de tipeo en el nombre).
+  - Se usa el modo 0x400. Modelo: **G(s) = 1.013 / (0.0146 s + 1) · e^(−0.005 s)** (ajuste 86–90 %). Lo robusto es
+    K ≈ 1 y τ ≈ 15 ms; el retardo (0–5 ms) es poco identificable a 100 Hz, y 2.º/3.er orden no mejoran al 1.º.
+  - Resultados en caché: `tf_resultados.json`, `tf_perfil.json` (poner `REFIT = True` en el notebook para
+    recalcular) y el resumen exportable `tf_por_modo.json`.
+  - Sin modelar: error estático ~0.3° en escalones (zona muerta/fricción).
 
 ## Pendientes
 
 Ver la lista completa en [`../docs/historia.md`](../docs/historia.md#pendientes-conocidos). En resumen: calibrar
 la transmisión por paralelogramos, corregir la convención "90 = recto" de `plot_leg_actuator_angles.ipynb` y
 `phase_match_*.py`, identificar el modelo del MyActuator con los datos de `sysid/` y llevar la estimación de fase
-con IMU al hardware real.
+con IMU al hardware real. Del MyActuator ya está el modelo lineal (modo 0x400); falta la zona muerta/fricción,
+validarlo con trayectorias reales y diseñar el prefiltro/compensador.
 
 `servos/fr_leg_animation.gif` pesa ~25 MB; si el repo crece, conviene regenerarlo más liviano o excluirlo.

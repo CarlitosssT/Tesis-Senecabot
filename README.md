@@ -93,8 +93,9 @@ python myactuator_esp32/gui.py                      # GUI del motor MyActuator
 - **Simulación — frente activo: pata RR.** Se quitó la cadera; rodilla y tobillo se mueven desde el torso con dos
   mecanismos de barras. Agente elegido: `simulacion/seneca_loco/artifacts/trained_agents_rr/2026-11-04/17-37-28/PPOJax_final.pkl`
   (0 caídas, 1.16 m/s). Pendiente: las patas traseras rebotan ~2 cm al aterrizar.
-- **Hardware:** transmisión por paralelogramos calculada (falta calibrar offsets y signos físicos) y señales de
-  identificación del MyActuator grabadas (falta identificar el modelo).
+- **Hardware:** transmisión por paralelogramos calculada (falta calibrar offsets y signos físicos) y modelo del
+  MyActuator identificado en modo 0x400: G(s) = 1.013 / (0.0146 s + 1) · e^(−0.005 s) (falta la zona muerta y el
+  compensador).
 
 La lista completa de pendientes está al final de [`docs/historia.md`](docs/historia.md).
 
