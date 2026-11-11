@@ -1,0 +1,55 @@
+# Fine-tune of the chosen RR agent (17-37-28) with POSITION control through the MyActuator transfer function
+# identified on the real motor in motion mode 0x400 (hardware/myactuator_esp32/sysid/tf_por_modo.json):
+#     G(s) = 1.0130 / (0.01461 s + 1) * exp(-0.00534 s)
+# The policy commands the angle of each crank; the command goes through G(s) and a stiff PD (saturated at the
+# motor torque limits of the XML) makes the crank follow it (fork: core/control_functions/tf_pd.py, TFPDControl).
+#
+#   python simulation/training/train.py --config-name conf_rr_finetune_tf
+#
+# The init agent was trained with TORQUE control, so its output layer is meaningless here: reset_actor_head zeroes
+# it (start action = 0 = the center pose of every crank) and only the observation layers and the critic are reused.
+# This is closer to a training from scratch than to the other fine-tunes, hence the longer run and the
+# from-scratch smoothness weights (see simulacion/CLAUDE.md, "Recompensa recortada a 0").
+defaults:
+  - override hydra/job_logging: default
+  - override hydra/launcher: basic
+
+hydra:
+  run:
+    dir: ${oc.env:SENECA_HOME,/home/andre/Tesis-Senecabot/simulacion/seneca_loco}/artifacts/trained_agents_rr/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+wandb:
+  project: "deepmimic_senecabot_rr"
+
+finetune:
+  init_agent: artifacts/trained_agents_rr/2026-11-04/17-37-28/PPOJax_final.pkl   # chosen RR agent
+  reference: data/processed_data/trajectory_adapted_rr_1p40.npz                  # same reference (1.40 m/s)
+  curriculum_frac: null
+  init_std: 0.3             # the init agent's std was learned for torques; restart exploration as from scratch
+  reset_actor_head: true
+
+  experiment:               # merged over the init agent's saved experiment config
+    total_timesteps: 100e6  # ~1.7 h on the GPU that trained 17-37-28 (30M in ~30 min)
+    lr: 1e-4
+    num_envs: 1024
+    validation:
+      num: 10
+    env_params:
+      nconmax: 13000
+      control_type: TFPDControl
+      control_params:
+        # stiff PD on the filtered angle: tracks G(s) within 0.36 deg RMS on a 5 deg step (trunk fixed, gravity on)
+        # without torque saturation; kd >= 40 chatters at dt = 1 ms.
+        p_gain: 3200.0       # N.m/rad
+        d_gain: 25.0         # N.m.s/rad
+        # action a in [-1, 1] commands center + a * half_range [deg]: center and 1.5x the half range of each crank
+        # in trajectory_adapted_rr_1p40.npz. Order: fr_rr1, fr_rr2, fl_rr1, fl_rr2, br_rr1, br_rr2, bl_rr1, bl_rr2.
+        action_center_deg: [-4.17, -136.08, -4.17, -136.08, -34.84, -119.29, -34.84, -119.29]
+        action_half_range_deg: [11.9, 58.1, 11.9, 58.1, 10.2, 22.3, 10.2, 22.3]
+        # G(s) of the MyActuator in mode 0x400 (K acts on the displacement from the center)
+        tf_gain: 1.0129645664540181
+        tf_tau: 0.014612171384488929     # s
+        tf_delay: 0.005340280763591637   # s
+      reward_params:
+        action_rate_w: 0.1   # from-scratch values: 0.5 (17-37-28) would clip the reward to 0 at std 0.3
+        action_jerk_w: 0.1

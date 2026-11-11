@@ -206,6 +206,19 @@ Key milestones, newest first. Full diagnostic detail is in this file's git histo
 > Condensed on finalization (2026-06-12). The full 2026-06-05 → 2026-06-12 development log is
 > preserved in this file's git history. New post-finalization changes go below, newest first.
 
+### 2026-11-11 — RR fine-tune with position control through the MyActuator transfer function
+
+New config `simulation/training/conf_rr_finetune_tf.yaml`: fine-tune of the chosen RR agent
+(`trained_agents_rr/2026-11-04/17-37-28/PPOJax_final.pkl`, reference `trajectory_adapted_rr_1p40.npz`) with
+`control_type: TFPDControl` (fork, see `SENECA_LOCAL_CHANGES.md` 2026-11-11): the policy commands crank angles,
+filtered by the transfer function identified on the real MyActuator in mode 0x400,
+G(s) = 1.0130 / (0.01461 s + 1) * exp(-0.00534 s), and tracked by a PD (kp 3200, kd 25) saturated at the motor
+torque limits. Action centers / half ranges: center and 1.5x the half range of each crank in the reference.
+The init agent used torque control, so `finetune.py` got a `finetune.reset_actor_head` option (zero output layer of
+the actor: start action 0 = center pose; the start check then compares only the value). With it the run is close
+to a from-scratch training: `init_std 0.3`, `action_rate_w / action_jerk_w 0.1`, 100M steps.
+Run: `python simulation/training/train.py --config-name conf_rr_finetune_tf`.
+
 ### 2026-11-10 — moved into the unified `Tesis-Senecabot` repository
 
 `Definicion-Senecabot` and `Senecabot_mini` were merged (with their git history) into `Tesis-Senecabot`. This

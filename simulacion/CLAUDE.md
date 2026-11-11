@@ -200,6 +200,11 @@ de contacto de 37 mm); el tronco va 3.5 cm bajo la referencia. Probado sin éxit
   de las barras; los torques usan la marcha RRR (`LINKAGE_XML = XML_PATH`). Ya existe un agente RR, así que se podría
   grabar su marcha y pasar `LINKAGE_XML` a `XML_RR_PATH`.
 - FL/BL se copian de FR/BR (espejo), no se dimensionan.
+- **2026-11-11: fine-tune RR con la G(s) del MyActuator** (`seneca_loco/simulation/training/conf_rr_finetune_tf.yaml`,
+  `TFPDControl` en el fork): control por posición, la red comanda ángulos de manivela → G(s) (modo 0x400) → PD
+  kp 3200 / kd 25 saturado al par del motor. Arranca de 17-37-28 con la capa de salida del actor en cero
+  (`finetune.reset_actor_head`), así que es casi un entrenamiento desde cero (100M pasos). Pendiente: correrlo en la
+  GPU del usuario y evaluarlo con `eval_rr.py`.
 - **2026-11-10: el catálogo MyActuator ganó 6 motores (X4-10-L, X4-36-L, X6-50-L, X8-150, X10-200, X15-450) y
   `X8-102` pasó a `X8-120`.** Con él, `run_pipeline` elige X6-50-L y X4-10-L en algunas articulaciones (8.73 / 9.68 kg
   en vez de 8.77 / 9.72 kg, PLA). `geometry_opt/results_summary.md` sigue con el catálogo anterior hasta que se regenere.

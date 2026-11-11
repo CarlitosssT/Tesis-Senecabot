@@ -7,6 +7,29 @@ a `[SENECA LOCAL CHANGE]` comment. Newest first.
 
 ---
 
+## 2026-11-11 — `TFPDControl`: position control through the identified MyActuator transfer function
+
+**Files:** `loco_mujoco/core/control_functions/tf_pd.py` (new), `loco_mujoco/core/control_functions/__init__.py`
+(import + register).
+
+**What.** New control function `TFPDControl` (runs at the simulation frequency, like `PDControl`). The action in
+[-1, 1] commands a joint angle `center + a * half_range` (per actuator, degrees in the config: the RR crank joints
+are unlimited, so `PDControl`'s scaling to the joint range cannot be used). The command goes through
+`G(s) = K / (tau s + 1) * exp(-Td s)` — fractional delay from a ring buffer, exact ZOH first-order step, gain K on
+the displacement from `center` — and a PD `kp (y - q) - kd qdot`, clipped to the actuator ctrlrange, makes the
+joint follow the filtered angle. State (`filt`, `delay_buf`) lives in `carry.control_func_state`; `reset()` sets it
+to the reset pose so the actuators start at rest. Defaults: the MyActuator in motion mode 0x400
+(`hardware/myactuator_esp32/sysid/tf_por_modo.json`): K = 1.0130, tau = 14.61 ms, Td = 5.34 ms.
+
+**Why.** Fine-tune of the RR agent with the dynamics of the real actuator (`conf_rr_finetune_tf.yaml` in
+`seneca_loco`). Existing control types are unchanged.
+
+**Checks (SenecaBotRR, CPU MuJoCo, dt = 1 ms).** 5 deg step on every crank with the trunk fixed and gravity on:
+kp 3200 / kd 25 follows G(s) within 0.36 deg RMS without torque saturation; kd >= 40 chatters (torque saturated
+30-90 % of the steps). Standing on the ground through `reset`/`step`: cranks hold within 0.22 deg, no saturation.
+
+---
+
 ## 2026-11-04 (later 2) — `MimicReward`: soft joint-limit penalty `joint_limit_w`
 
 **Files:** `loco_mujoco/core/reward/trajectory_based.py` (`MimicReward.__init__`, `__call__`).

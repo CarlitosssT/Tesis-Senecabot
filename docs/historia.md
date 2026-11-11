@@ -39,6 +39,7 @@ El trabajo de Carlos Andrés Tovar avanzó en dos repositorios en paralelo, que 
 | 11-06 | hardware | Seguimiento de trayectoria con el motor MyActuator (registro `track_fr_hip_motor_20261106_*`) y señales de identificación de sistema (`sysid/`) grabadas. |
 | 11-10 | hardware | **Identificación del MyActuator** (`hardware/myactuator_esp32/sysid/visualizar_sysid.ipynb`): se elige el modo 0x400 y el modelo de 1.er orden G(s) = 1.013 / (0.0146 s + 1) · e^(−0.005 s), ajuste 86–90 %. |
 | 11-10 | — | Los dos repositorios se fusionan en este (`Tesis-Senecabot`), con su historial. |
+| 11-11 | simulación | Fine-tune del agente RR elegido con **control por posición a través de la G(s) del MyActuator** (`conf_rr_finetune_tf.yaml`, función de control `TFPDControl`): la red comanda el ángulo de cada manivela, que pasa por G(s) y un PD saturado al par del motor. Actuador validado en CPU (escalón y robot de pie) y carga del agente verificada; el entrenamiento aún no se ha corrido (se hace en la GPU del usuario). |
 | 11-10 | simulación | Catálogo MyActuator ampliado desde la web del fabricante: dimensiones de 29 motores, curvas características de 19, 6 motores nuevos y fichas PDF (`simulacion/catalogo_myactuator/README.md`). Cambia la selección de `geometry_opt` (aún no regenerada). |
 
 ---

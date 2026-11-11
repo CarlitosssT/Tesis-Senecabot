@@ -113,6 +113,16 @@ def init_agent_state(config, env, agent_conf, n_envs=256, n_steps=200, seed=0):
         params[net][layer]["kernel"] = k_new
     if ft.get("init_std") is not None:
         params["log_std"] = np.full_like(params["log_std"], np.log(float(ft.init_std)))
+    # 2026-11-11: when the action changes meaning (e.g. torque -> commanded angle with TFPDControl) the init
+    # agent's output layer is meaningless: zero it, so the start policy commands action 0 (the controller's
+    # center pose) and only the observation-processing layers and the critic are reused.
+    reset_head = bool(ft.get("reset_actor_head", False))
+    if reset_head:
+        actor = params[_INPUT_LAYERS[0][0]]
+        last = max(actor, key=lambda name: int(name.split("_")[-1]))
+        actor[last]["kernel"][:] = 0.0
+        actor[last]["bias"][:] = 0.0
+        print(f"[finetune] reset_actor_head: {_INPUT_LAYERS[0][0]}/{last} set to zero (start action = 0)")
 
     ref_params = agent_conf.network.init(jax.random.key(0), jnp.zeros(new_dim))["params"]
     shapes = lambda t: jax.tree.map(lambda x: tuple(np.shape(x)), t)
@@ -149,9 +159,15 @@ def init_agent_state(config, env, agent_conf, n_envs=256, n_steps=200, seed=0):
     a_old, v_old = old_policy(obs)
     (pi_new, v_new), _ = agent_conf.network.apply({"params": params, "run_stats": run_stats}, obs,
                                                   mutable=["run_stats"])
-    err = max(float(jnp.abs(a_old - pi_new.mean()).max()), float(jnp.abs(v_old - v_new).max()))
-    assert err < 1e-4, f"Start policy differs from the init agent (max |diff| = {err:.2e})."
-    print(f"[finetune] start policy/value == init agent's (max |diff| {err:.1e})")
+    if reset_head:
+        err = float(jnp.abs(v_old - v_new).max())
+        assert err < 1e-4, f"Start value differs from the init agent (max |diff| = {err:.2e})."
+        assert float(jnp.abs(pi_new.mean()).max()) < 1e-6, "reset_actor_head: start action is not 0."
+        print(f"[finetune] start value == init agent's (max |diff| {err:.1e}); start action = 0")
+    else:
+        err = max(float(jnp.abs(a_old - pi_new.mean()).max()), float(jnp.abs(v_old - v_new).max()))
+        assert err < 1e-4, f"Start policy differs from the init agent (max |diff| = {err:.2e})."
+        print(f"[finetune] start policy/value == init agent's (max |diff| {err:.1e})")
 
     train_state = TrainState.create(apply_fn=agent_conf.network.apply, params=params,
                                     run_stats=run_stats, tx=agent_conf.tx)
