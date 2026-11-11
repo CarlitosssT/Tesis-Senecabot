@@ -65,7 +65,11 @@ Implementado y verificado numéricamente en `leg_transmission/leg_transmission.p
 - La ESP32 traduce comandos de texto (`p <grados> <dps>`, `e`, `s`, …) a tramas CAN; el PC solo usa `pyserial`.
 - `myactuator_esp32.py`: clase `MyActuator(port, motor_id)`: `move_to`, `read_angle` (0.01°), `play(t, ángulos)` (trayectoria ≤1000 puntos se sube a la ESP32, que la reproduce con su reloj y lee encoder tras cada comando; modos `MODE_POSITION` 0xA4 y `MODE_MOTION` 0x400 con lazo kp/kd). Límites: ±360°, 300 dps, 600 dps en trayectoria, aceleración 100–60000 dps².
 - `gui.py` (tkinter+matplotlib): posición manual, deseado vs medido en vivo, carga de CSV, pestaña "Última ejecución", exporta CSV. `tracking.py` (lectura CSV, `analyse`, `build_reference`, `save_log`), `track_csv.py` (CLI: RMS, error máx, retardo; CSV por defecto `leg_transmission/leg_motor_angles_one_cycle.csv`, ej. columna `fr_hip_motor`). Hay un registro de ejemplo `track_fr_hip_motor_20261106_103421.*`.
-- `sysid/`: `make_sysid_signals.py` genera señales de identificación (1000 puntos, 100 Hz, empiezan/terminan en 0°): chirp 0.2–15 Hz, multisine (24 senoidales, fases de Schroeder, 2 periodos), steps (±1,2,3,5°), ramp (2 dps). Se cargan en `gui.py` con escala 1, ciclos 1, offset 0, 600 dps. `visualizar_sysid.ipynb` (último trabajo) grafica `sysid_*.csv` contra las `ejecucion_*.csv` reales. Siguiente paso natural: identificar el modelo comando→posición con esos datos.
+- `sysid/`: `make_sysid_signals.py` genera señales de identificación (1000 puntos, 100 Hz, empiezan/terminan en 0°): chirp 0.2–15 Hz, multisine (24 senoidales, fases de Schroeder, 2 periodos), steps (±1,2,3,5°), ramp (2 dps). Se cargan en `gui.py` con escala 1, ciclos 1, offset 0, 600 dps. `visualizar_sysid.ipynb` grafica `sysid_*.csv` contra las `ejecucion_*.csv` reales **y contiene la identificación del modelo comando→posición** (ver abajo).
+  - **Modos:** los `ejecucion_*_0x400.csv` son de `MODE_MOTION` (0x400); los demás, del modo posición 0xA4 ("modo A", mucho más lento). Typo conocido: `ejecucion_cihrp_0x400.csv` es el chirp 0x400.
+  - **Identificación (2026-11-10, en el notebook, autocontenida):** modelos 1.er/2.º/3.er orden + retardo `Td`, ajustados por mínimos cuadrados no lineales para los grupos `TODOS`, `A` y `0x400`. El retardo se aplica a la **salida** con interpolación (aplicarlo a la entrada sobre rejilla de 1 ms lo dejaba cuantizado y el optimizador nunca lo movía). Incluye tabla comparativa, Bode/escalón y perfil de `Td`. Caché en `tf_resultados.json` y `tf_perfil.json` (`REFIT = True` para recalcular); export en `tf_por_modo.json`.
+  - **Decisión del usuario: se usa el modo 0x400.** Modelo vigente: `G(s) = 1.013 / (0.0146 s + 1) · e^(−0.005 s)` (ajuste 86–90 % en sus archivos). `Td` ∈ [0, 5] ms es poco identificable con 100 Hz; lo robusto es K≈1 y τ≈15 ms. Se descartó el modelo `TODOS` (τ≈44 ms) porque mezcla el modo A (τ≈49 ms). El 2.º/3.er orden no mejora al 1.º (retardo y orden se compensan).
+  - **Limitaciones sin modelar:** error estático ~0.3° en escalones (zona muerta/fricción) y saturación de velocidad/aceleración en el chirp del modo A.
 - `motor_sequence.py`: secuencias `angulo[:dps[:pausa]]` o CSV `angulo,velocidad,pausa`.
 
 ## Estado del repo (git)
@@ -86,6 +90,6 @@ Ajustar `PORT` (COMx) en notebooks/scripts. Al leer notebooks con Python en Wind
 ## Pendientes / ideas abiertas
 - Calibrar offsets y signos físicos de la nueva transmisión por paralelogramos.
 - Corregir (o marcar como obsoletos) los cálculos del notebook de plot/phase_match que usan la convención "90 = recto".
-- Identificación de sistema del MyActuator con las señales de `sysid/`.
+- MyActuator (modo 0x400): modelo lineal ya identificado; falta modelar zona muerta/fricción, validarlo con trayectorias reales (ej. `fr_hip_motor`) y diseñar prefiltro/compensador (τ≈15 ms).
 - Integración IMU-ankle → pata robot en hardware real (hoy solo simulada); `test_bmi160` es el primer paso.
 - Decidir sobre el gif de 25 MB y hacer commit de la reorganización.
